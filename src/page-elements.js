@@ -1,6 +1,25 @@
+import { upper } from '../node_modules/alphabet';
+
 const pageElements = (() => {
   // components shared by both boards
-  const boardTile = '<div class="board-tile" data-index="" data-has-boat="" data-targeted="no"></div>'
+
+  function createBoardTile(xIndex, yIndex) {
+    return `div class="board-tile" data-index="${xIndex+yIndex}" data-has-boats="no" data-targeted="no"></div>`
+  }
+
+  let innerBoard = '';
+
+  function fillElement(callback) {
+    let element = '';
+    for (let i = 0; i <= 9; i += 1) {
+      const letter = upper[i];
+      for (let j = 1; j <= 10; j += 1) {
+        const number = `${j}`;
+        callback(letter, number);
+      }
+    }
+    return element;
+  }
 
   const gameBoard = `
   <div class="player-board"</div>
@@ -19,7 +38,9 @@ const pageElements = (() => {
   }
 
   return {
-    getHeader,
-    getMain
+    createBoardTile,
+    fillElement,
   }
 })()
+
+export default pageElements;
