@@ -1,13 +1,13 @@
 import { upper } from '../node_modules/alphabet';
 
 const pageElements = (() => {
-  // components shared by both boards
-
-  function createBoardTile(xIndex, yIndex) {
-    return `div class="board-tile" data-index="${xIndex+yIndex}" data-has-boats="no" data-targeted="no"></div>`
+  function createBoardTile(xIndex, yIndex, callback) {
+    if (typeof callback === 'function') {
+      return callback(xIndex, yIndex);
+    } else {
+      return `div class="board-tile" data-index="${xIndex+yIndex}" data-has-boats="no" data-targeted="no"></div>`
+    }
   }
-
-  let innerBoard = '';
 
   function fillElement(callback) {
     let element = '';
@@ -15,10 +15,15 @@ const pageElements = (() => {
       const letter = upper[i];
       for (let j = 1; j <= 10; j += 1) {
         const number = `${j}`;
-        callback(letter, number);
+        element += createBoardTile(letter, number, callback)
       }
     }
     return element;
+  }
+
+  function fillBoard() {
+    board = `div class="board">${fillElement(createBoardTile())}</div>`;
+    return board;
   }
 
   const gameBoard = `

@@ -1,5 +1,9 @@
 import pageElements from "../page-elements";
 
+it('returns a value', () => {
+  expect(pageElements.fillElement()).toBeTruthy();
+})
+
 const mockCallBack = jest.fn((a, b) => a + b);
 pageElements.fillElement(mockCallBack);
 
