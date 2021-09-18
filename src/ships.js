@@ -34,7 +34,6 @@ const ships = (length) => {
 
   return {
     getLength,
-    makeSegments,
     getSegments,
     isHit,
     isSunk,
