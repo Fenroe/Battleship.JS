@@ -1,9 +1,15 @@
 const ships = (length) => {
+  // check ship length
   function getLength() {
     return length;
   }
 
+  // manage segments
   let segments = [];
+
+  function getSegments() {
+    return segments;
+  }
 
   function makeSegments() {
     let array = [];
@@ -13,14 +19,12 @@ const ships = (length) => {
     segments = array;
   }
 
-  function getSegments() {
-    return segments;
-  }
-
+  // register hit
   function isHit(index) {
     segments[index] = true;
   }
 
+  // check if sunk
   function isSunk() {
     if (getSegments().includes(false)) {
       return false;

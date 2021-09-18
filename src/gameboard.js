@@ -1,7 +1,19 @@
 import ships from "./ships";
-import  upper from "../node_modules/alphabet"
+import upper from "../node_modules/alphabet"
 
 const gameboard = () => {
+  // template functions 
+  function checkContainer(coordinates, container) {
+    let isValid = true;
+    coordinates.forEach((coordinate) => {
+      if(!container.includes(coordinate)) {
+        isValid = false;
+      }
+    })
+    return isValid;
+  }
+
+  // board tiles
   let boardTiles = [];
 
   function generateBoardTiles() {
@@ -14,6 +26,7 @@ const gameboard = () => {
     }
   }
 
+  // ship data
   let shipData = [
     {
       name: 'carrier',
@@ -45,7 +58,14 @@ const gameboard = () => {
       token: null,
       sunk: false,
     }
-  ];
+  ]
+
+  function setShipData(shipName, coordinates, shipToken, callback) {
+    const ship = filterShipData(shipName, callback);
+    ship.coordinates = coordinates;
+    ship.token = shipToken;
+    addCoordinatesInUse(coordinates);
+  }
 
   function filterShipData(shipName, callback) {
     if(typeof callback === 'function') {
@@ -61,6 +81,17 @@ const gameboard = () => {
     }
   }
 
+  function getShipCoordinates(shipName, callback) {
+    const ship = filterShipData(shipName, callback);
+    return ship.coordinates;
+  }
+
+  function checkShipToken(shipName) {
+    const ship = filterShipData(shipName);
+    return ship.token;
+  }
+
+  // coordinates in use by ships
   let coordinatesInUse = [];
 
   function getCoordinatesInUse() {
@@ -73,43 +104,6 @@ const gameboard = () => {
     })
   }
 
-  function clearCoordinatesInUse() {
-    coordinatesInUse = [];
-  }
-
-  let missedShots = [];
-
-  function getMissedShots() {
-    return missedShots;
-  }
-
-  function getShipCoordinates(shipName, callback) {
-    const ship = filterShipData(shipName, callback);
-    return ship.coordinates;
-  }
-
-  function setShipData(shipName, coordinates, shipToken, callback) {
-    const ship = filterShipData(shipName, callback);
-    ship.coordinates = coordinates;
-    ship.token = shipToken;
-    addCoordinatesInUse(coordinates);
-  }
-
-  function checkShipToken(shipName) {
-    const ship = filterShipData(shipName);
-    return ship.token;
-  }
-
-  function checkContainer(coordinates, container) {
-    let isValid = true;
-    coordinates.forEach((coordinate) => {
-      if(!container.includes(coordinate)) {
-        isValid = false;
-      }
-    })
-    return isValid;
-  }
-
   function validateCoordinates(coordinates) {
     return checkContainer(coordinates, boardTiles)
   }
@@ -117,6 +111,19 @@ const gameboard = () => {
   function checkCoordinatesInUse(coordinates) {
     return checkContainer(coordinates, coordinatesInUse)
   }
+
+  function clearCoordinatesInUse() {
+    coordinatesInUse = [];
+  }
+
+  // missed shots
+  let missedShots = [];
+
+  function getMissedShots() {
+    return missedShots;
+  }
+
+  // validation functions
 
   function compareCoordinatesToShip(coordinatesLength, shipLength) {
     if(coordinatesLength === shipLength) {
@@ -148,6 +155,7 @@ const gameboard = () => {
     return isValid;
   }
 
+  // ship placement
   function placeShip(shipName, shipLength, coordinates, callback) {
     if(!Array.isArray(coordinates)) {
       throw new Error('coordinates argument must be an array');
@@ -188,6 +196,7 @@ const gameboard = () => {
     placeShip('destroyer', 2, coordinates, callback);
   }
 
+  // recieved attack
   function recievedAttack(coordinate) {
     if(!coordinatesInUse.includes(coordinate)) {
       return false;
@@ -206,12 +215,7 @@ const gameboard = () => {
     }
   }
 
-  function sinkAllShips() {
-    shipData.forEach((ship) => {
-      ship.sunk = true;
-    })
-  }
-
+  // check if ships are still floating
   function shipsStillFloating() {
     let floatingShips = false;
     shipData.forEach((ship) => {
@@ -220,6 +224,13 @@ const gameboard = () => {
       }
     })
     return floatingShips;
+  }
+
+  // testing
+  function sinkAllShips() {
+    shipData.forEach((ship) => {
+      ship.sunk = true;
+    })
   }
 
   // on init
